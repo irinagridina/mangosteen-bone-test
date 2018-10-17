@@ -1,277 +1,180 @@
-<style>
-  .site-header__logo img {
-    max-width: {{ section.settings.logo_max_width | escape | default: '180' | remove: 'px' | append: 'px' }};
-  }
+<div data-section-id="{{ section.id }}" data-section-type="header-section">
+  {% if section.settings.show_announcement %}
+    {% if section.settings.home_page_only == false or template.name == 'index' %}
+      <style>
+        .announcement-bar {
+          background-color: {{ section.settings.announcement_color_bg }};
+        }
 
-  @media screen and (max-width: 768px) {
-    .site-header__logo img {
-      max-width: 100%;
-    }
-  }
-</style>
+        .announcement-bar--link:hover {
+          {% assign brightness = section.settings.announcement_color_bg | color_brightness %}
 
-{% assign hero_full_height = true %}
-<div data-section-id="{{ section.id }}" data-section-type="header-section" data-template="{{ template.name }}">
-  <div id="NavDrawer" class="drawer drawer--left">
-    {% include 'drawer-menu' %}
-  </div>
-  <div class="header-container drawer__header-container">
-    <div class="header-wrapper{% unless hero_full_height %} header-wrapper--over-hero{% endunless %}">
-      {% if section.settings.show_announcement %}
-        {% if section.settings.home_page_only == false or template.name == 'index' %}
-          <style>
-            .announcement-bar {
-              background-color: {{ section.settings.color_bg }};
-            }
-
-            .announcement-bar--link:hover {
-              {% assign brightness = section.settings.color_bg | color_brightness %}
-
-              {% if brightness <= 192 %}
-                {% assign lightenAmount = 255 | minus: brightness | divided_by: 255 | times: 16 %}
-                background-color: {{ section.settings.color_bg | color_lighten: lightenAmount }};
-              {% else %}
-                {% assign darkenAmount = 255 | divided_by: brightness | times: 8 %}
-                background-color: {{ section.settings.color_bg | color_darken: darkenAmount }};
-              {% endif %}
-            }
-
-            .announcement-bar__message {
-              color: {{ section.settings.color_text }};
-            }
-          </style>
-
-          {% if section.settings.link == blank %}
-            <div class="announcement-bar">
+          {% if brightness <= 192 %}
+            {% assign lightenAmount = 255 | minus: brightness | divided_by: 255 | times: 16 %}
+            background-color: {{ section.settings.announcement_color_bg | color_lighten: lightenAmount }};
           {% else %}
-            <a href="{{ section.settings.link }}" class="announcement-bar announcement-bar--link">
+            {% assign darkenAmount = 255 | divided_by: brightness | times: 8 %}
+            background-color: {{ section.settings.announcement_color_bg | color_darken: darkenAmount }};
           {% endif %}
+        }
 
-            <p class="announcement-bar__message">{{ section.settings.text | escape }}</p>
+        .announcement-bar__message {
+          color: {{ section.settings.announcement_color_text }};
+        }
+      </style>
 
-          {% if section.settings.link == blank %}
-            </div>
-          {% else %}
-            </a>
-          {% endif %}
+      {% if section.settings.announcement_link == blank %}
+        <div class="announcement-bar">
+      {% else %}
+        <a href="{{ section.settings.announcement_link }}" class="announcement-bar announcement-bar--link">
+      {% endif %}
 
+        <p class="announcement-bar__message">{{ section.settings.announcement_text | escape }}</p>
+
+      {% if section.settings.announcement_link == blank %}
+        </div>
+      {% else %}
+        </a>
+      {% endif %}
+
+    {% endif %}
+  {% endif %}
+
+  <header class="site-header site-header--{{ section.settings.menu_style }} animate {% if section.settings.menu_text_color %}{{ section.settings.menu_text_color }}{% endif %}" role="banner" data-menu-style="{{ section.settings.menu_style }}">
+    <div class="wrapper">
+      {% if section.settings.logo_use_inverted and section.settings.logo-inverted != blank %}
+        {% assign inverted_logo_in_use = true %}
+      {% endif %}
+
+      {% if section.settings.logo != blank or inverted_logo_in_use %}
+        {%if section.settings.logo_max_width != blank %}
+          {% capture logo_image_width %}{{ section.settings.logo_max_width | remove: 'px' | escape }}{% endcapture %}
+        {% else %}
+          {% assign logo_image_width = '200' %}
         {% endif %}
       {% endif %}
 
-      <header class="site-header" role="banner">
-        <div class="wrapper">
-          <div class="grid--full grid--table">
-            <div class="grid__item large--hide large--one-sixth one-quarter">
-              <div class="site-nav--open site-nav--mobile">
-                <button type="button" class="icon-fallback-text site-nav__link site-nav__link--burger js-drawer-open-button-left" aria-controls="NavDrawer">
-                  <span class="burger-icon burger-icon--top"></span>
-                  <span class="burger-icon burger-icon--mid"></span>
-                  <span class="burger-icon burger-icon--bottom"></span>
-                  <span class="fallback-text">{{ 'general.drawers.navigation' | t }}</span>
-                </button>
-              </div>
-            </div>
-            <div class="grid__item large--one-third medium-down--one-half">
-              {% comment %}
-                Use the uploaded logo from theme settings if enabled.
-                Site name gets precedence with H1 tag on homepage, div on other pages.
-              {% endcomment %}
-              {% if template.name == 'index' %}
-                <h1 class="site-header__logo large--left" itemscope itemtype="http://schema.org/Organization">
-              {% else %}
-                <div class="h1 site-header__logo large--left" itemscope itemtype="http://schema.org/Organization">
-              {% endif %}
-                {% if section.settings.logo_max_width != blank %}
-                  {% capture image_size %}{{ section.settings.logo_max_width | escape }}x{% endcapture %}
-                {% else %}
-                  {% assign image_size = "180x" %}
-                {% endif %}
+      {% if template.name == 'index' %}
+        <h1 class="site-header__logo {% if section.settings.logo or inverted_logo_in_use %} display-table use-image" style="max-width:{{ logo_image_width }}px;"{% endif %} itemscope itemtype="http://schema.org/Organization">
+      {% else %}
+        <div class="h1 site-header__logo {% if section.settings.logo or inverted_logo_in_use %} display-table use-image" style="max-width:{{ logo_image_width }}px;"{% endif %} itemscope itemtype="http://schema.org/Organization">
+      {% endif %}
 
-                {% if section.settings.logo-inverted and template.name == 'index' %}
-                  <a href="/" itemprop="url" class="site-header__logo-link">
-                    <img src="{{ section.settings.logo-inverted | img_url: image_size }}"
-                    srcset="{{ section.settings.logo-inverted | img_url: image_size }} 1x, {{ section.settings.logo-inverted | img_url: image_size, scale: 2 }} 2x"
-                    alt="{{ section.settings.logo-inverted.alt | default: shop.name }}"
-                    itemprop="logo">
-                  </a>
-                {% elsif section.settings.logo %}
-                  <a href="/" itemprop="url" class="site-header__logo-link">
-                     <img src="{{ section.settings.logo | img_url: image_size }}"
-                     srcset="{{ section.settings.logo | img_url: image_size }} 1x, {{ section.settings.logo | img_url: image_size, scale: 2 }} 2x"
-                     alt="{{ section.settings.logo.alt | default: shop.name }}"
-                     itemprop="logo">
-                  </a>
-                {% else %}
-                  <a href="/" itemprop="url">{{ shop.name }}</a>
-                {% endif %}
-              {% if template.name == 'index' %}
-                </h1>
-              {% else %}
-                </div>
-              {% endif %}
-            </div>
-            <nav class="grid__item large--two-thirds large--text-right medium-down--hide" role="navigation">
-              {% comment %}
-                List out your main-menu linklist (default)
+      {% if section.settings.logo or inverted_logo_in_use %}
+        {%- assign img_url = section.settings.logo | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+        {% capture image_size_for_url %}{{ logo_image_width }}x{% endcapture %}
+        {% if inverted_logo_in_use and template.name == 'index'  %}
+          <a href="/" itemprop="url" class="site-header__logo-link--inverted display-table-cell">
+          <img src="{{ section.settings.logo-inverted | img_url: image_size_for_url }}"
+            srcset="{{ section.settings.logo-inverted | img_url: image_size_for_url }} 1x, {{ section.settings.logo-inverted | img_url: image_size_for_url, scale: 2 }} 2x"
+            alt="{{ section.settings.logo.alt | default: shop.name }}"
+            itemprop="logo">
+          </a>
+        {% endif %}
+        {% if section.settings.logo %}
+          <a href="/" itemprop="url" class="site-header__logo-link display-table-cell{% if inverted_logo_in_use and template.name == 'index' %} logo--hidden{% endif %}">
+            <img src="{{ section.settings.logo | img_url: image_size_for_url }}"
+              srcset="{{ section.settings.logo | img_url: image_size_for_url }} 1x, {{ section.settings.logo | img_url: image_size_for_url, scale: 2 }} 2x"
+              alt="{{ section.settings.logo.alt | default: shop.name }}"
+              itemprop="logo">
+          </a>
+        {% else %}
+          <a href="/" itemprop="url" class="site-header__logo-text site-header__logo-link display-table-cell{% if inverted_logo_in_use and template.name == 'index' %} logo--hidden{% endif %}">{{ shop.name }}</a>
+        {% endif %}
+      {% else %}
+        <a href="/" itemprop="url" class="site-header__logo-text">{{ shop.name }}</a>
+      {% endif %}
 
-                More info on linklists:
-                  - http://docs.shopify.com/themes/liquid-variables/linklists
-              {% endcomment %}
-              <!-- begin site-nav -->
-              <ul class="site-nav" id="AccessibleNav">
-                {% for link in linklists[section.settings.main_menu_link_list].links %}
-                  {% if link.links != blank %}
-                  {% assign parent_index = forloop.index %}
-                    <li
-                      class="site-nav__item site-nav--has-dropdown {% if link.active %}site-nav--active{% endif %}"
-                      aria-haspopup="true"
-                      data-meganav-type="parent">
-                      <a
-                        href="{{ link.url }}"
-                        class="site-nav__link"
-                        data-meganav-type="parent"
-                        aria-controls="MenuParent-{{ parent_index }}"
-                        aria-expanded="false"
-                        {% unless template.name == 'index' %}{% if link.active %}aria-current="page"{% endif %}{% endunless%}>
-                          {{ link.title | escape }}
-                          <span class="icon icon-arrow-down" aria-hidden="true"></span>
-                      </a>
-                      <ul
-                        id="MenuParent-{{ parent_index }}"
-                        class="site-nav__dropdown {% if link.levels == 2 %}site-nav--has-grandchildren{% endif %}"
-                        data-meganav-dropdown>
-                        {% for childlink in link.links %}
-                          {% if childlink.links != blank %}
-                          {% assign child_index = forloop.index %}
-                            <li
-                              class="site-nav__item site-nav--has-dropdown site-nav--has-dropdown-grandchild {% if childlink.active %}site-nav--active{% endif %}"
-                              aria-haspopup="true">
-                              <a
-                                href="{{ childlink.url }}"
-                                class="site-nav__dropdown-link"
-                                aria-controls="MenuChildren-{{ parent_index }}-{{ child_index }}"
-                                data-meganav-type="parent"
-                                {% unless template.name == 'index' %}{% if childlink.active %}aria-current="page"{% endif %}{% endunless%}
-                                tabindex="-1">
-                                  {{ childlink.title | escape }}
-                                  <span class="icon icon-arrow-down" aria-hidden="true"></span>
-                              </a>
-                              <div class="site-nav__dropdown-grandchild">
-                                <ul
-                                  id="MenuChildren-{{ parent_index }}-{{ child_index }}"
-                                  data-meganav-dropdown>
-                                  {% for grandchildlink in childlink.links %}
-                                    <li{% if grandchildlink.active %} class="site-nav--active"{% endif %}>
-                                      <a
-                                        href="{{ grandchildlink.url }}"
-                                        class="site-nav__dropdown-link"
-                                        data-meganav-type="child"
-                                        {% unless template.name == 'index' %}{% if grandchildlink.active %}aria-current="page"{% endif %}{% endunless %}
-                                        tabindex="-1">
-                                          {{ grandchildlink.title | escape }}
-                                        </a>
-                                    </li>
-                                  {% endfor %}
-                                </ul>
-                              </div>
-                            </li>
-                          {% else %}
-                            <li{% if childlink.active %} class="site-nav--active"{% endif %}>
-                              <a
-                                href="{{ childlink.url }}"
-                                class="site-nav__dropdown-link"
-                                data-meganav-type="child"
-                                {% if childlink.active %}aria-current="page"{% endif %}
-                                tabindex="-1">
-                                  {{ childlink.title | escape }}
-                              </a>
-                            </li>
-                          {% endif %}
-                        {% endfor %}
-                      </ul>
-                    </li>
-                  {% else %}
-                    <li class="site-nav__item{% if link.active %} site-nav--active{% endif %}">
-                      <a
-                        href="{{ link.url }}"
-                        class="site-nav__link"
-                        data-meganav-type="child"
-                        {% unless template.name == 'index' %}{% if link.active %}aria-current="page"{% endif %}{% endunless%}>
-                          {{ link.title | escape }}
-                      </a>
-                    </li>
-                  {% endif %}
-                {% endfor %}
-
-                {% comment %}
-                  Remove comment tags below to add a search box to your header, visible on screens where your header menu
-                  is displayed inline.
-                  <li class="site-nav__item site-nav--search__bar medium-down--hide">
-                    {% include 'search-bar', search_btn_style: 'btn', search_bar_location: 'search-bar--header' %}
-                  </li>
-                {% endcomment %}
-                {% if shop.customer_accounts_enabled %}
-                  <li class="site-nav__item site-nav__expanded-item site-nav__item--compressed">
-                    <a class="site-nav__link site-nav__link--icon" href="/account">
-                      <span class="icon-fallback-text">
-                        <span class="icon icon-customer" aria-hidden="true"></span>
-                        <span class="fallback-text">
-                          {% if customer %}
-                            {{ 'layout.customer.account' | t }}
-                          {% else %}
-                            {{ 'layout.customer.log_in' | t }}
-                          {% endif %}
-                        </span>
-                      </span>
-                    </a>
-                  </li>
-                {% endif %}
-
-                {% if section.settings.search == 'page' or section.settings.search == 'modal' %}
-                  {% assign search_modal = true %}
-                  {% if section.settings.search == 'page' %}
-                    {% assign search_modal = false %}
-                  {% endif %}
-                  <li class="site-nav__item site-nav__item--compressed">
-                    <a href="/search" class="site-nav__link site-nav__link--icon{% if search_modal %} js-toggle-search-modal{% endif %}" data-mfp-src="#SearchModal">
-                      <span class="icon-fallback-text">
-                        <span class="icon icon-search" aria-hidden="true"></span>
-                        <span class="fallback-text">{{ 'general.search.title' | t }}</span>
-                      </span>
-                    </a>
-                  </li>
-                {% endif %}
-
-                <li class="site-nav__item site-nav__item--compressed">
-                  <a href="/cart" class="site-nav__link site-nav__link--icon cart-link js-drawer-open-button-right" aria-controls="CartDrawer">
-                    <span class="icon-fallback-text">
-                      <span class="icon icon-cart" aria-hidden="true"></span>
-                      <span class="fallback-text">{{ 'layout.cart.title' | t }}</span>
-                    </span>
-                    <span class="cart-link__bubble{% if cart.item_count > 0 %} cart-link__bubble--visible{% endif %}"></span>
-                  </a>
-                </li>
-
-              </ul>
-              <!-- //site-nav -->
-            </nav>
-            <div class="grid__item large--hide one-quarter">
-              <div class="site-nav--mobile text-right">
-                <a href="/cart" class="site-nav__link cart-link js-drawer-open-button-right" aria-controls="CartDrawer">
-                  <span class="icon-fallback-text">
-                    <span class="icon icon-cart" aria-hidden="true"></span>
-                    <span class="fallback-text">{{ 'layout.cart.title' | t }}</span>
-                  </span>
-                  <span class="cart-link__bubble{% if cart.item_count > 0 %} cart-link__bubble--visible{% endif %}"></span>
-                </a>
-              </div>
-            </div>
-          </div>
-
+      {% if template.name == 'index' %}
+        </h1>
+      {% else %}
         </div>
-      </header>
+      {% endif %}
+
+      <nav class="nav-bar" id="navBar" role="navigation">
+        <button id="menu-closer" class="lines-button lines-button--close" aria-controls="navBar" aria-expanded="true">
+          <span class="fallback-text">{{ 'layout.navigation.close_menu' | t }}</span>
+          <span class="lines" aria-hidden="true"></span>
+        </button>
+        <ul class="site-nav" id="AccessibleNav">
+          {% for link in linklists[section.settings.main_linklist].links %}
+            {% if link.links != blank %}
+              <li class="site-nav--has-dropdown" aria-haspopup="true">
+                <button class="site-nav__link" aria-expanded="false">
+                  {{ link.title | escape }}
+                  <span class="icon icon-plus" aria-hidden="true">{% include 'asset_svg' with 'plus' %}</span>
+                  <span class="icon icon-minus" aria-hidden="true">{% include 'asset_svg' with 'minus' %}</span>
+                </button>
+                <ul class="site-nav__dropdown">
+                  <div>
+                    {% for childlink in link.links %}
+                      {% if childlink.links != blank %}
+                        <li class="site-nav--has-dropdown" aria-haspopup="true">
+                          <button class="site-nav__link site-nav__link--child" aria-expanded="false">
+                            {{ childlink.title | escape }}
+                            <span class="icon icon-plus" aria-hidden="true">{% include 'asset_svg' with 'plus' %}</span>
+                            <span class="icon icon-minus" aria-hidden="true">{% include 'asset_svg' with 'minus' %}</span>
+                          </button>
+                          <ul class="site-nav__dropdown site-nav__dropdown--grandchilds">
+                            <div>
+                              {% for grandchildlink in childlink.links %}
+                                <li>
+                                  <a href="{{ grandchildlink.url }}" class="site-nav__link site-nav__link--grandchild{% if grandchildlink.active %} site-nav--active{% endif %}" {% if grandchildlink.active %}aria-current="page"{% endif %}>{{ grandchildlink.title | escape }}</a>
+                                </li>
+                              {% endfor %}
+                            </div>
+                          </ul>
+                        </li>
+                      {% else %}
+                        <li>
+                          <a href="{{ childlink.url }}" class="site-nav__link site-nav__link--child{% if childlink.active %} site-nav--active{% endif %}" {% if childlink.active %}aria-current="page"{% endif %}>{{ childlink.title | escape }}</a>
+                        </li>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                  <span class="arrow">&nbsp;</span>
+                </ul>
+              </li>
+            {% else %}
+              <li>
+                <a href="{{ link.url }}" class="site-nav__link{% if link.active %} site-nav--active{% endif %}" {% if link.active %}aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+
+          {% unless section.settings.menu_product == blank %}
+            <li class="btn__buy"><a href="{{ all_products[section.settings.menu_product].url }}" class="btn btn--outline {% if section.settings.menu_style == 'classic' %} btn--small btn--dark {% else %} btn--regular btn--light {% endif %}">{{ 'layout.navigation.buy_button' | t }} <span class="visually-hidden">{{ all_products[section.settings.menu_product].title }}</span> {{ all_products[section.settings.menu_product].price | money_without_trailing_zeros }}</a></li>
+          {% endunless %}
+
+          {% if cart.item_count > 0 %}
+            <li class="btn__cart">
+              <a href="/cart">
+                <span class="icon" aria-hidden="true">{% unless cart.item_count > 99 %}{{ cart.item_count }}{% endunless %}{% include 'asset_svg' with 'cart' %}</span>
+                <span class="text">{{ 'layout.navigation.shopping_cart' | t }}</span>
+              </a>
+            </li>
+          {% endif %}
+
+          {% if shop.customer_accounts_enabled %}
+            <li class="btn__account">
+              <a href="/account{% unless customer %}/login{% endunless %}">
+                <span class="icon" aria-hidden="true">{% include 'asset_svg' with 'account' %}</span>
+                <span class="text">{{ 'layout.navigation.my_account' | t }}</span>
+              </a>
+            </li>
+          {% endif %}
+
+        </ul>
+
+      </nav>
+
+      <button id="menu-opener" class="lines-button" aria-controls="navBar" aria-expanded="false">
+        <span class="fallback-text">{{ 'layout.navigation.open_menu' | t }}</span>
+        <span class="lines" aria-hidden="true"></span>
+      </button>
+
     </div>
-  </div>
+  </header>
 </div>
 
 
@@ -279,26 +182,60 @@
 {% schema %}
 {
   "name": {
-    "de": "Header",
+    "de": "Titel",
     "en": "Header",
     "es": "Encabezado",
     "fr": "En-tête",
-    "it": "header",
+    "it": "Header",
     "ja": "ヘッダー",
     "pt-BR": "Cabeçalho"
   },
   "settings": [
     {
-      "type": "image_picker",
-      "id": "logo",
-      "label": {
+      "type": "header",
+      "content": {
         "de": "Logo",
         "en": "Logo",
-        "es": "Logo",
+        "es": "Logotipo",
         "fr": "Logo",
         "it": "Logo",
         "ja": "ロゴ",
         "pt-BR": "Logotipo"
+      }
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": {
+        "de": "Logo-Foto",
+        "en": "Logo image",
+        "es": "Imagen del logotipo",
+        "fr": "Image du logo",
+        "it": "Immagine del logo",
+        "ja": "ロゴ画像",
+        "pt-BR": "Imagem do logotipo"
+      },
+      "info": {
+        "de": "200px breites .png empfohlen",
+        "en": "200px wide .png recommended",
+        "es": "200px de ancho .png recomendado",
+        "fr": "200 px wide .png recommandé",
+        "it": "File .png con larghezza di 200 pixel consigliato",
+        "ja": "200ピクセル幅.png推奨",
+        "pt-BR": ".png com 200 px de largura recomendado"
+      }
+    },
+    {
+      "type": "checkbox",
+      "id": "logo_use_inverted",
+      "label": {
+        "de": "Ein Startseitenlogo nutzen",
+        "en": "Use a home page logo",
+        "es": "Usa un logotipo de la página de inicio",
+        "fr": "Utiliser un logo de la page d'accueil",
+        "it": "Usare un logo per la home page",
+        "ja": "ホームページのロゴを使用する",
+        "pt-BR": "Use um logotipo na página inicial"
       }
     },
     {
@@ -336,73 +273,30 @@
         "pt-BR": "Largura do logotipo personalizado (em pixels)"
       },
       "default": {
-        "de": "180",
-        "en": "180",
-        "es": "180",
-        "fr": "180",
-        "it": "180",
-        "ja": "180",
-        "pt-BR": "180"
+        "de": "250",
+        "en": "250",
+        "es": "250",
+        "fr": "250",
+        "it": "250",
+        "ja": "250",
+        "pt-BR": "250"
       }
     },
     {
       "type": "header",
-      "content": "Navigation"
-    },
-    {
-      "type": "select",
-      "id": "search",
-      "options": [
-        {
-          "value": "modal",
-          "label": {
-            "de": "Modal",
-            "en": "Modal",
-            "es": "Modal",
-            "fr": "Fenêtre modale",
-            "it": "Modal",
-            "ja": "モーダル",
-            "pt-BR": "Modal"
-          }
-        },
-        {
-          "value": "page",
-          "label": {
-            "de": "Seite",
-            "en": "Page",
-            "es": "Página",
-            "fr": "Page",
-            "it": "Pagina",
-            "ja": "ページ",
-            "pt-BR": "Página"
-          }
-        },
-        {
-          "value": "none",
-          "label": {
-            "de": "Keine",
-            "en": "None",
-            "es": "Ninguno",
-            "fr": "Aucun",
-            "it": "Nessuno",
-            "ja": "なし",
-            "pt-BR": "Nenhum"
-          }
-        }
-      ],
-      "label": {
-        "de": "Suchtyp",
-        "en": "Search type",
-        "es": "Tipo de búsqueda",
-        "fr": "Type de recherche",
-        "it": "Tipo di ricerca",
-        "ja": "検索タイプ",
-        "pt-BR": "Tipo de pesquisa"
+      "content": {
+        "de": "Navigation",
+        "en": "Navigation",
+        "es": "Navegación",
+        "fr": "Navigation",
+        "it": "Navigazione",
+        "ja": "メニュー",
+        "pt-BR": "Navegação"
       }
     },
     {
       "type": "link_list",
-      "id": "main_menu_link_list",
+      "id": "main_linklist",
       "label": {
         "de": "Menü",
         "en": "Menu",
@@ -412,42 +306,106 @@
         "ja": "メニュー",
         "pt-BR": "Menu"
       },
-      "default": "main-menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "select",
+      "id": "menu_style",
+      "label": {
+        "de": "Menü-Stil",
+        "en": "Menu style",
+        "es": "Estilo del menú",
+        "fr": "Style de menu",
+        "it": "Stile menu",
+        "ja": "メニュースタイル",
+        "pt-BR": "Estilo do menu"
+      },
+      "options": [
+        {
+          "value": "classic",
+          "label": {
+            "de": "Klassisch",
+            "en": "Classic",
+            "es": "Clásico",
+            "fr": "Classique",
+            "it": "Classico",
+            "ja": "クラシック",
+            "pt-BR": "Clássico"
+          }
+        },
+        {
+          "value": "drawer",
+          "label": {
+            "de": "Einschub",
+            "en": "Drawer",
+            "es": "Carrito lateral",
+            "fr": "Tiroir",
+            "it": "Finestra",
+            "ja": "ドロワー",
+            "pt-BR": "Caixa registradora"
+          }
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "menu_text_color",
+      "label": {
+        "de": "Klassische Menüfarbe",
+        "en": "Classic menu color",
+        "es": "Colores del menú clásico",
+        "fr": "Couleur de menu classique",
+        "it": "Colore menu classico",
+        "ja": "クラシックメニューのカラー",
+        "pt-BR": "Cor do menu clássico"
+      },
+      "options": [
+        {
+          "value": "is-dark",
+          "label": {
+            "de": "Dunkel",
+            "en": "Dark",
+            "es": "Oscuro",
+            "fr": "Foncé",
+            "it": "Scuro",
+            "ja": "ダーク",
+            "pt-BR": "Dark"
+          }
+        },
+        {
+          "value": "is-light",
+          "label": {
+            "de": "Hell",
+            "en": "Light",
+            "es": "Claro",
+            "fr": "Clair",
+            "it": "Chiaro",
+            "ja": "ライト",
+            "pt-BR": "Light"
+          }
+        }
+      ],
       "info": {
-        "de": "Wenn Links zu lang sind, wird die Navigation eingeklappt und als Menü-Schaltfläche angezeigt. [Mehr Infos](https://help.shopify.com/manual/using-themes/themes-by-shopify/brooklyn#navigation-tips-tips-specific)",
-        "en": "The menu will collapse into a menu button if links are too long. [Learn more](https://help.shopify.com/manual/using-themes/themes-by-shopify/brooklyn#navigation-tips-tips-specific)",
-        "es": "La navegación colapsará en un botón de menú si los enlaces son demasiado largos. [Más información](https://help.shopify.com/manual/using-themes/themes-by-shopify/brooklyn#navigation-tips-tips-specific)",
-        "fr": "La navigation sera réduite à un bouton de menu si les liens sont trop longs. [En savoir plus](https://help.shopify.com/manual/using-themes/themes-by-shopify/brooklyn#navigation-tips-tips-specific)",
-        "it": "La navigazione si riducerà a un pulsante menu se i link sono troppo lunghi. [Maggiori informazioni](https://help.shopify.com/manual/using-themes/themes-by-shopify/brooklyn#navigation-tips-tips-specific)",
-        "ja": "リンクが長すぎる場合、ナビゲーションがメニューボタンに折り畳まれます。[もっと詳しく](https://help.shopify.com/manual/using-themes/themes-by-shopify/brooklyn#navigation-tips-tips-specific)",
-        "pt-BR": "A navegação ficará oculta em um botão de menu se os links forem muito longos. [Saiba mais](https://help.shopify.com/manual/using-themes/themes-by-shopify/brooklyn#navigation-tips-tips-specific)"
+        "de": "Nutzen Sie dies für eine bessere Sichtbarkeit, wenn das Menü über dunklen Abschnitten liegt",
+        "en": "Use this when the menu is over dark sections for better visibility",
+        "es": "Úsalo cuando el menú esté sobre secciones oscuras para una mejor visibilidad",
+        "fr": "Utilisez ceci lorsque le menu se trouve sur des sections sombres, pour une meilleure visibilité",
+        "it": "Usare quando il menu è su sezioni scure per una migliore visibilità",
+        "ja": "視認性を高めるため、暗いセクションの上にメニューがある場合に使用します",
+        "pt-BR": "Use quando o menu estiver sobre seções escuras para melhorar a visibilidade"
       }
     },
     {
-      "type": "link_list",
-      "id": "drawer_bottom_link_list",
+      "type": "product",
+      "id": "menu_product",
       "label": {
-        "de": "Zusätzliches Menü",
-        "en": "Secondary sidebar menu",
-        "es": "Menú adicional",
-        "fr": "Menu supplémentaire",
-        "it": "Menu aggiuntivo",
-        "ja": "追加メニュー",
-        "pt-BR": "Menu adicional"
-      },
-      "default": "footer"
-    },
-    {
-      "type": "checkbox",
-      "id": "drawer_search_enable",
-      "label": {
-        "de": "Suche aktivieren",
-        "en": "Enable search",
-        "es": "Habilitar búsqueda",
-        "fr": "Activer la recherche",
-        "it": "Abilita ricerca",
-        "ja": "検索を有効にする",
-        "pt-BR": "Ativar pesquisa"
+        "de": "Produkt für \"Jetzt kaufen\"-Schaltfläche",
+        "en": "Product for \"buy now\" button",
+        "es": "Producto para el botón \"comprar ahora\"",
+        "fr": "Produit pour le bouton « Acheter maintenant »",
+        "it": "Prodotto per il pulsante \"Acquista ora\"",
+        "ja": "「今すぐ購入」ボタンのための商品",
+        "pt-BR": "Botão de produto para \"comprar agora\""
       }
     },
     {
@@ -492,21 +450,21 @@
     },
     {
       "type": "text",
-      "id": "text",
+      "id": "announcement_text",
       "label": {
-        "de": "Text",
-        "en": "Text",
-        "es": "texto",
-        "fr": "Texte",
-        "it": "Testo",
-        "ja": "テキスト",
-        "pt-BR": "Texto"
+        "de": "Ankündigungstext",
+        "en": "Announcement text",
+        "es": "Texto del anuncio",
+        "fr": "Texte d'annonce",
+        "it": "Testo annuncio",
+        "ja": "告知テキスト",
+        "pt-BR": "Texto do anúncio"
       },
       "default": {
-        "de": "Hier Ankündigung platzieren",
+        "de": "Hier etwas ankündigen",
         "en": "Announce something here",
         "es": "Anuncia algo aquí",
-        "fr": "Annoncer quelque chose ici",
+        "fr": "Annoncez quelque chose ici",
         "it": "Annuncia qualcosa qui",
         "ja": "ここで告知してください",
         "pt-BR": "Anuncie algo aqui"
@@ -514,22 +472,31 @@
     },
     {
       "type": "url",
-      "id": "link",
+      "id": "announcement_link",
       "label": {
-        "de": "Link",
-        "en": "Link",
-        "es": "Enlace",
-        "fr": "Lien",
-        "it": "Link",
-        "ja": "リンク",
-        "pt-BR": "Link"
+        "de": "Ankündigungslink",
+        "en": "Announcement link",
+        "es": "Enlace de anuncio",
+        "fr": "Lien d'annonce",
+        "it": "Link annuncio",
+        "ja": "告知リンク",
+        "pt-BR": "Link de anúncio"
+      },
+      "info": {
+        "de": "Optional",
+        "en": "Optional",
+        "es": "Opcional",
+        "fr": "Facultatif",
+        "it": "Facoltativo",
+        "ja": "選択させる",
+        "pt-BR": "Opcional"
       }
     },
     {
       "type": "color",
-      "id": "color_bg",
+      "id": "announcement_color_bg",
       "label": {
-        "de": "Leiste",
+        "de": "Zeile",
         "en": "Bar",
         "es": "Barra",
         "fr": "Barre",
@@ -537,15 +504,15 @@
         "ja": "バー",
         "pt-BR": "Barra"
       },
-      "default": "#1c1d1d"
+      "default": "#429c80"
     },
     {
       "type": "color",
-      "id": "color_text",
+      "id": "announcement_color_text",
       "label": {
         "de": "Text",
         "en": "Text",
-        "es": "texto",
+        "es": "Texto",
         "fr": "Texte",
         "it": "Testo",
         "ja": "テキスト",
