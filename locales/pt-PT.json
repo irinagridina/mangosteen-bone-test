@@ -80,6 +80,10 @@
       "note": "Instruções especiais para o vendedor",
       "subtotal": "Subtotal",
       "savings_html": "Está a poupar {{ savings }}",
+      "taxes_and_shipping_at_checkout": "Taxas e portes de envio calculados no pagamento",
+      "taxes_and_shipping_policy_at_checkout_html": "Taxas e <a href=\"{{ link }}\">portes de envio<\/a> calculados no pagamento",
+      "taxes_included_but_shipping_at_checkout": "Taxas incluídas e portes de envio calculados no pagamento",
+      "taxes_included_and_shipping_policy_html": "Taxas incluídas. <a href=\"{{ link }}\">Portes de envio<\/a> calculados no pagamento.",
       "remove_item": "Eliminar",
       "update_cart": "Atualizar Carrinho de Compras",
       "checkout": "Check-out",
@@ -88,11 +92,7 @@
       "continue_browsing": "Continuar a Comprar",
       "quantity": "Quantidade",
       "reduce_quantity": "Reduza a quantidade do artigo em um",
-      "increase_quantity": "Aumente a quantidade do artigo em um",
-      "taxes_and_shipping_at_checkout": "Taxas e portes de envio calculados no pagamento",
-      "taxes_and_shipping_policy_at_checkout_html": "Taxas e <a href=\"{{ link }}\">portes de envio<\/a> calculados no pagamento",
-      "taxes_included_but_shipping_at_checkout": "Taxas incluídas e portes de envio calculados no pagamento",
-      "taxes_included_and_shipping_policy_html": "Taxas incluídas. <a href=\"{{ link }}\">Portes de envio<\/a> calculados no pagamento."
+      "increase_quantity": "Aumente a quantidade do artigo em um"
     }
   },
   "collections": {
@@ -251,14 +251,14 @@
       "sold_out": "Esgotado",
       "on_sale": "Em Promoção",
       "on_sale_from": "Desde",
+      "include_taxes": "Taxas incluídas.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Portes de envio<\/a> calculados no pagamento.",
       "unavailable": "Indisponível",
       "quantity": "Quantidade",
       "add_to_cart": "Adicionar ao Carrinho de Compras",
       "sale_price": "Preço de saldo",
       "regular_price": "Preço normal",
-      "full_details": "Detalhes completos",
-      "include_taxes": "Taxas incluídas.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Portes de envio<\/a> calculados no pagamento."
+      "full_details": "Detalhes completos"
     }
   },
   "map": {

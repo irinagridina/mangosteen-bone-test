@@ -80,6 +80,10 @@
       "note": "Istruzioni speciali per il venditore",
       "subtotal": "Totale parziale",
       "savings_html": "Stai risparmiando {{ savings }}",
+      "taxes_and_shipping_at_checkout": "Tasse e spese di spedizione calcolate al momento del pagamento",
+      "taxes_and_shipping_policy_at_checkout_html": "Tasse e <a href=\"{{ link }}\">spese di spedizione<\/a> calcolate al momento del pagamento",
+      "taxes_included_but_shipping_at_checkout": "Tasse incluse e spese di spedizione calcolate al momento del pagamento",
+      "taxes_included_and_shipping_policy_html": "Tasse incluse. <a href=\"{{ link }}\">Spese di spedizione<\/a> calcolate al momento del pagamento.",
       "remove_item": "Rimuovi articolo",
       "update_cart": "Aggiorna carrello",
       "checkout": "Check-out",
@@ -88,11 +92,7 @@
       "continue_browsing": "Continua a navigare",
       "quantity": "Quantità",
       "reduce_quantity": "Riduci di uno",
-      "increase_quantity": "Aumenta di uno",
-      "taxes_and_shipping_at_checkout": "Tasse e spese di spedizione calcolate al momento del pagamento",
-      "taxes_and_shipping_policy_at_checkout_html": "Tasse e <a href=\"{{ link }}\">spese di spedizione<\/a> calcolate al momento del pagamento",
-      "taxes_included_but_shipping_at_checkout": "Tasse incluse e spese di spedizione calcolate al momento del pagamento",
-      "taxes_included_and_shipping_policy_html": "Tasse incluse. <a href=\"{{ link }}\">Spese di spedizione<\/a> calcolate al momento del pagamento."
+      "increase_quantity": "Aumenta di uno"
     }
   },
   "collections": {
@@ -251,14 +251,14 @@
       "sold_out": "Esaurito",
       "on_sale": "In Offerta",
       "on_sale_from": "Da",
+      "include_taxes": "Tasse incluse.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Spese di spedizione<\/a> calcolate al momento del pagamento.",
       "unavailable": "Non disponibile",
       "quantity": "Quantità",
       "add_to_cart": "Aggiungi al carrello",
       "sale_price": "Prezzo scontato",
       "regular_price": "Prezzo di listino",
-      "full_details": "Dettagli completi",
-      "include_taxes": "Tasse incluse.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Spese di spedizione<\/a> calcolate al momento del pagamento."
+      "full_details": "Dettagli completi"
     }
   },
   "map": {

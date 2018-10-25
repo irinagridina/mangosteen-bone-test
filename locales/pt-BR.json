@@ -80,6 +80,10 @@
       "note": "Instruções especiais para o vendedor",
       "subtotal": "Subtotal",
       "savings_html": "Você está economizando {{ savings }}",
+      "taxes_and_shipping_at_checkout": "Impostos e frete calculados no checkout",
+      "taxes_and_shipping_policy_at_checkout_html": "Impostos e <a href=\"{{ link }}\">frete<\/a> calculados no checkout",
+      "taxes_included_but_shipping_at_checkout": "Imposto incluído e frete calculado no checkout",
+      "taxes_included_and_shipping_policy_html": "Imposto incluído. <a href=\"{{ link }}\">Frete<\/a> calculado no checkout.",
       "remove_item": "Remover item",
       "update_cart": "Atualizar carrinho",
       "checkout": "Finalizar pedido",
@@ -88,11 +92,7 @@
       "continue_browsing": "Continuar navegando",
       "quantity": "Quantidade",
       "reduce_quantity": "Reduzir quantidade em uma unidade",
-      "increase_quantity": "Aumentar quantidade em uma unidade",
-      "taxes_and_shipping_at_checkout": "Impostos e frete calculados no checkout",
-      "taxes_and_shipping_policy_at_checkout_html": "Impostos e <a href=\"{{ link }}\">frete<\/a> calculados no checkout",
-      "taxes_included_but_shipping_at_checkout": "Imposto incluído e frete calculado no checkout",
-      "taxes_included_and_shipping_policy_html": "Imposto incluído. <a href=\"{{ link }}\">Frete<\/a> calculado no checkout."
+      "increase_quantity": "Aumentar quantidade em uma unidade"
     }
   },
   "collections": {
@@ -251,14 +251,14 @@
       "sold_out": "Vendido",
       "on_sale": "Em promoção",
       "on_sale_from": "De",
+      "include_taxes": "Imposto incluído.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Frete<\/a> calculado no checkout.",
       "unavailable": "Indisponível",
       "quantity": "Quantidade",
       "add_to_cart": "Adicionar ao carrinho",
       "sale_price": "Preço promocional",
       "regular_price": "Preço normal",
-      "full_details": "Informações completas",
-      "include_taxes": "Imposto incluído.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Frete<\/a> calculado no checkout."
+      "full_details": "Informações completas"
     }
   },
   "map": {
